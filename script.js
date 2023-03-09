@@ -7,6 +7,10 @@ const countdownElTitle = document.getElementById('countdown-title');
 const countdownBtn = document.getElementById('countdown-button');
 const timeElements = document.querySelectorAll('span');
 
+const completeEl = document.getElementById('complete');
+const completeElInfo = document.getElementById('complete-info');
+const completeBtn = document.getElementById('complete-button');
+
 let countdownTitle = '';
 let countdownDate = '';
 let countdownValue = Date;
@@ -35,18 +39,26 @@ function updateDOM() {
 
     console.log(': ', days, hours, minutes, seconds);
 
-    // populate countdown
-    countdownElTitle.textContent = `${countdownTitle}`;
-    timeElements[0].textContent = `${days}`;
-    timeElements[1].textContent = `${hours}`;
-    timeElements[2].textContent = `${minutes}`;
-    timeElements[3].textContent = `${seconds}`;
+   // hide input
+   inputContainer.hidden = true;
 
-    // hide input
-    inputContainer.hidden = true;
-    // show countdown
-    countdownEl.hidden = false;
-  }, second);  
+   // if countdown has ended, show complete
+   if (distance < 0) {
+    completeEl.hidden = true;
+    clearInterval(countdownActive);
+    completeElInfo.textContent = `${countdownTitle} finished on ${countdownDate}`;
+    completeEl.hidden = false;
+   } else {     
+     // populate countdown
+     countdownElTitle.textContent = `${countdownTitle}`;
+     timeElements[0].textContent = `${days}`;
+     timeElements[1].textContent = `${hours}`;
+     timeElements[2].textContent = `${minutes}`;
+     timeElements[3].textContent = `${seconds}`;
+     completeEl.hidden = true;
+     countdownEl.hidden = false;
+   }
+  }, second);
 }
 
 // take values from input
@@ -56,10 +68,15 @@ function updateCountdown(e) {
   countdownDate = e.srcElement[1].value;
   console.log(': ', countdownTitle, countdownDate);
 
-  // get number version of current date
-  countdownValue = new Date(countdownDate).getTime();
-  console.log(': ', countdownValue);
-  updateDOM();
+  // chek for valid date
+  if (countdownDate === '') {
+    alert("Please select a date for the countdown...")
+  } else {
+    // get number version of current date
+    countdownValue = new Date(countdownDate).getTime();
+    console.log(': ', countdownValue);
+    updateDOM();
+  }
 }
 
 function reset() {
